@@ -1,0 +1,248 @@
+-- MySQL dump 10.13  Distrib 5.7.27, for Linux (x86_64)
+--
+-- Host: localhost    Database: warehouse
+-- ------------------------------------------------------
+-- Server version	5.7.27-0ubuntu0.18.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `Customer`
+--
+
+DROP TABLE IF EXISTS `Customer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer` (
+  `customer_code` int(11) NOT NULL,
+  `address` varchar(20) NOT NULL,
+  `customer_name` varchar(30) NOT NULL,
+  `phone_number` varchar(14) NOT NULL,
+  `login_login_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`customer_code`),
+  UNIQUE KEY `UK_cvs4jo0cx2ypejjgrygctede3` (`phone_number`),
+  KEY `FKqu9eottfgoelsme72tkaxmpoc` (`login_login_id`),
+  CONSTRAINT `FKqu9eottfgoelsme72tkaxmpoc` FOREIGN KEY (`login_login_id`) REFERENCES `Login` (`login_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER customer_audit_insert AFTER INSERT ON Customer 
+FOR EACH ROW 
+BEGIN
+    INSERT INTO 
+    customer_insert(customer_name,login_login_id,changedat,action)
+    VALUES (NEW.customer_name,NEW.login_login_id,
+        NOW(),
+        'INSERT');
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER customer_audit_delete AFTER DELETE ON Customer 
+FOR EACH ROW 
+BEGIN
+    INSERT INTO 
+    customer_delete(customer_name,login_login_id,changedat,action)
+    VALUES (OLD.customer_name,OLD.login_login_id,
+        NOW(),
+        'DELETE');
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `Item`
+--
+
+DROP TABLE IF EXISTS `Item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Item` (
+  `item_code` int(11) NOT NULL,
+  `item_name` varchar(20) NOT NULL,
+  `item_price` double NOT NULL,
+  `item_stock` int(11) NOT NULL,
+  `merchant_merchant_code` int(11) DEFAULT NULL,
+  PRIMARY KEY (`item_code`),
+  UNIQUE KEY `UK_jokaa4ir7lgvjlcrfi7cykqxf` (`item_name`),
+  KEY `FKfi5mbitqkpvoek71s9ql67cyt` (`merchant_merchant_code`),
+  CONSTRAINT `FKfi5mbitqkpvoek71s9ql67cyt` FOREIGN KEY (`merchant_merchant_code`) REFERENCES `Merchant` (`merchant_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ItemOrder`
+--
+
+DROP TABLE IF EXISTS `ItemOrder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ItemOrder` (
+  `orderid` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `merchant_name` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `item_item_code` int(11) DEFAULT NULL,
+  PRIMARY KEY (`orderid`),
+  KEY `FKbb12psahd64nm5mp9urcyc8yr` (`item_item_code`),
+  CONSTRAINT `FKbb12psahd64nm5mp9urcyc8yr` FOREIGN KEY (`item_item_code`) REFERENCES `Item` (`item_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Login`
+--
+
+DROP TABLE IF EXISTS `Login`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Login` (
+  `login_id` int(11) NOT NULL,
+  `password` varchar(10) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`login_id`),
+  UNIQUE KEY `UK_1g9v15flnutsrr6b37ntefib7` (`password`),
+  UNIQUE KEY `UK_eaj8o68avp2lp29ufm8cdaqqd` (`username`),
+  KEY `FKefxyfsrvoqwr29s47eba3k4cw` (`role_id`),
+  CONSTRAINT `FKefxyfsrvoqwr29s47eba3k4cw` FOREIGN KEY (`role_id`) REFERENCES `Role` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Merchant`
+--
+
+DROP TABLE IF EXISTS `Merchant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Merchant` (
+  `merchant_code` int(11) NOT NULL,
+  `merchant_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`merchant_code`),
+  UNIQUE KEY `UK_a7cv8p4lbwv5x5rxuwxxhvu8x` (`merchant_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Purchase`
+--
+
+DROP TABLE IF EXISTS `Purchase`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Purchase` (
+  `transaction_id` int(11) NOT NULL,
+  `date_Of_purchase` date NOT NULL,
+  `quantity_purchased` int(11) NOT NULL,
+  `total` double NOT NULL,
+  `customer_customer_code` int(11) DEFAULT NULL,
+  `item_item_code` int(11) DEFAULT NULL,
+  PRIMARY KEY (`transaction_id`),
+  KEY `FKg2sug43qh4mdl4guwh2u3nol` (`customer_customer_code`),
+  KEY `FKkkw10aja5d2h3ah5c3jq5mwsj` (`item_item_code`),
+  CONSTRAINT `FKg2sug43qh4mdl4guwh2u3nol` FOREIGN KEY (`customer_customer_code`) REFERENCES `Customer` (`customer_code`),
+  CONSTRAINT `FKkkw10aja5d2h3ah5c3jq5mwsj` FOREIGN KEY (`item_item_code`) REFERENCES `Item` (`item_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Role`
+--
+
+DROP TABLE IF EXISTS `Role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Role` (
+  `id` int(11) NOT NULL,
+  `role_code` varchar(255) NOT NULL,
+  `role_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_ie9499qaa8k0kyr08vdl3at3k` (`role_code`),
+  UNIQUE KEY `UK_ltwrim5wenkon6cb48qt459ax` (`role_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `customer_delete`
+--
+
+DROP TABLE IF EXISTS `customer_delete`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customer_delete` (
+  `customer_name` varchar(20) DEFAULT NULL,
+  `login_login_id` int(11) DEFAULT NULL,
+  `changedat` date DEFAULT NULL,
+  `action` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `customer_insert`
+--
+
+DROP TABLE IF EXISTS `customer_insert`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customer_insert` (
+  `customer_name` varchar(20) DEFAULT NULL,
+  `login_login_id` int(11) DEFAULT NULL,
+  `changedat` date DEFAULT NULL,
+  `action` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `hibernate_sequence`
+--
+
+DROP TABLE IF EXISTS `hibernate_sequence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
